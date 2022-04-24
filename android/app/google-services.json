@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "51548356860",
+    "project_id": "baiti-app-project",
+    "storage_bucket": "baiti-app-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:51548356860:android:ba7fb64d13185cf7ec5779",
+        "android_client_info": {
+          "package_name": "com.example.baiti"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "51548356860-va801jducgbbafvnt741btq99g594qik.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCp251BEe4hWXG5-eVcLJXE6UoLnfhVPco"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "51548356860-va801jducgbbafvnt741btq99g594qik.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
