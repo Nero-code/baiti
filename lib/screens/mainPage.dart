@@ -17,6 +17,7 @@ class _MainPageState extends State<MainPage>
     with SingleTickerProviderStateMixin {
   var db = StudentsDB(dataBaseName: 'DataBase');
   late AlertDialog deleteDialog;
+  int? a;
 
   _MainPageState() {
     print("mount point 1");
