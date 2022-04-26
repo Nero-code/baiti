@@ -2,14 +2,20 @@ import 'package:baiti/widgets/dataBase_helper.dart';
 import 'package:flutter/material.dart';
 
 class AddStudentPage extends StatefulWidget {
-  const AddStudentPage({Key? key}) : super(key: key);
+  const AddStudentPage({
+    Key? key,
+    this.db,
+  }) : super(key: key);
+
+  final StudentsDB? db;
 
   @override
-  State<AddStudentPage> createState() => _AddStudentPageState();
+  State<AddStudentPage> createState() => _AddStudentPageState(db: db);
 }
 
 class _AddStudentPageState extends State<AddStudentPage> {
-  final db = StudentsDB(dataBaseName: "DataBase");
+  _AddStudentPageState({required this.db});
+  StudentsDB? db;
   var nameCtrl = TextEditingController();
   var ageCtrl = TextEditingController();
   var motherNameCtrl = TextEditingController();
@@ -25,7 +31,7 @@ class _AddStudentPageState extends State<AddStudentPage> {
       Navigator.pop(context);
       return;
     }
-    int? id = await db.insertStudent({
+    int? id = await db?.insertStudent({
       'name': nameCtrl.text,
       'year': ageCtrl.text,
       'university': universityCtrl.text,

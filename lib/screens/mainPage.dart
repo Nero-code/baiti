@@ -7,19 +7,18 @@ import 'package:baiti/widgets/dataBase_helper.dart';
 import 'package:flutter/material.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage({Key? key}) : super(key: key);
+  MainPage({Key? key, this.db}) : super(key: key);
 
+  final StudentsDB? db;
   @override
-  State<MainPage> createState() => _MainPageState();
+  State<MainPage> createState() => _MainPageState(db);
 }
 
 class _MainPageState extends State<MainPage>
     with SingleTickerProviderStateMixin {
-  var db = StudentsDB(dataBaseName: 'DataBase');
   late AlertDialog deleteDialog;
-
-  _MainPageState() {
-    print("mount point 1");
+  final db;
+  _MainPageState(this.db) {
     deleteDialog = AlertDialog(
       title: Text("تأكيد الحذف؟"),
       content: Text("سيتم حذف جميع بيانات اﻷشخاص المحددين, هل أنت متأكد؟"),
@@ -62,19 +61,20 @@ class _MainPageState extends State<MainPage>
   Future<void> fetchData() async {
     List<Student> pe = await db.getAllStudents();
     List<Payments> py = await db.getAllPayment();
+    print("people: $pe");
+    print("payments: $py");
+
     setState(() {
       people = pe;
       payments = py;
     });
-    print("people: $people");
-    print("payments: $payments");
   }
 
   void saveStudent() async {
     var res = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => AddStudentPage(),
+        builder: (_) => AddStudentPage(db: db),
       ),
     );
     if (res == null) return;
@@ -139,7 +139,6 @@ class _MainPageState extends State<MainPage>
 
   @override
   Widget build(BuildContext context) {
-    // if (people.isEmpty) fetchData();
     return WillPopScope(
       onWillPop: () async {
         if (multiCheckEnabled) {

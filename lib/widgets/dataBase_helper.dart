@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:async';
 import 'package:path/path.dart' as path;
@@ -55,28 +58,33 @@ class StudentsDB {
   }
 
   Future<void> init() async {
-    dbPath = path.join(await getDatabasesPath(), dataBaseName);
+    Directory dir = await getApplicationDocumentsDirectory();
+
+    dbPath = dir.path + "/" + dataBaseName;
+    print('dbPath: $dbPath');
     db = await openDatabase(
       dbPath,
       version: 1,
-      onCreate: (database, version) {
-        print("DataBase Created: ${database.path}");
-        database.execute(
+      onCreate: (dbPath, version) {
+        print("DataBase Created: ${dbPath.path}");
+        dbPath.execute(
           'CREATE TABLE IF NOT EXISTS Student(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, year TEXT, motherName TEXT, university TEXT, nationalid TEXT)',
         );
-        database.execute(
+        dbPath.execute(
             'CREATE TABLE IF NOT EXISTS Payment(userId INTEGER, payment FLOAT, description TEXT, date TEXT)');
       },
     );
+    print("init finished!");
   }
 
   Future<int?> insertStudent(Map<String, dynamic> p) async {
+    print(db);
     var res = await db?.insert(
       'Student',
       p,
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-
+    print(res);
     return res;
   }
 

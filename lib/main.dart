@@ -1,4 +1,5 @@
 import 'package:baiti/screens/mainPage.dart';
+import 'package:baiti/widgets/dataBase_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -38,6 +39,7 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   TextEditingController textController = TextEditingController();
   bool isLoggedIn = true;
+  var db = StudentsDB(dataBaseName: 'baiti.db');
 
   Future<void> holdOn() async {
     await Future.delayed(Duration(seconds: 2));
@@ -143,7 +145,8 @@ class _LoginState extends State<Login> {
                           ),
                         ),
                         onPressed: () => Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(builder: (_) => MainPage())),
+                            MaterialPageRoute(
+                                builder: (_) => MainPage(db: db))),
                         child: Text(
                           "Sign in",
                           style: TextStyle(color: Colors.grey.shade800),
