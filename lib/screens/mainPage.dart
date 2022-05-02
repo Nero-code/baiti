@@ -118,13 +118,6 @@ class _MainPageState extends State<MainPage>
     print("DONE!");
   }
 
-  // @override
-  // void initState() {
-  //   fetchData();
-
-  //   super.initState();
-  // }
-
   List<Payments> getStudentPayments(int studentId) {
     List<Payments> temp = [];
 
@@ -156,11 +149,8 @@ class _MainPageState extends State<MainPage>
           actions: [
             IconButton(
               splashRadius: 25,
-              onPressed: () => {
-                setState(() {
-                  print("is Search Enabled: $isSearchEnabled");
-                })
-              },
+              onPressed: () =>
+                  {showSearch(context: context, delegate: SearchData(people))},
               icon: Icon(
                 Icons.search,
               ),
@@ -254,6 +244,84 @@ class _MainPageState extends State<MainPage>
                 ),
         ),
       ),
+    );
+  }
+}
+
+class SearchData extends SearchDelegate<Student> {
+  final List<Student> persons;
+  SearchData(this.persons);
+  final List<Student> fList = [];
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [
+      IconButton(
+          onPressed: () {
+            query = "";
+          },
+          icon: Icon(Icons.clear)),
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+        onPressed: () {
+            Student std =Student(id: 0, name: "nodata", year: "0", university: "0", motherName: "motherName", nationalId: "nationalId");
+            close(context, std);
+        },
+        icon: AnimatedIcon(
+          icon: AnimatedIcons.menu_arrow,
+          progress: transitionAnimation,
+        ));
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    return Container(
+      color: Color(0xff262938),
+      padding: EdgeInsets.symmetric(horizontal: 22, vertical: 25),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: ListView(
+              children: fList.map((e) {
+                return SimpleListItem(
+                  title: e.name,
+                  id: e.id,
+                  onPressed: () {
+                    //  Navigator.of(context).push(MaterialPageRoute(builder:(_)=>StudentInfo(student: e)));
+                  },
+                );
+              }).toList(),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    final suggest =
+        this.persons.where((element) => element.name.contains(query)).toList();
+    fList.clear();
+    for (int i = 0; i < suggest.length; i++) {
+      fList.add(suggest[i]);
+    }
+    return ListView.builder(
+      itemBuilder: (context, index) => ListTile(
+        leading: Icon(Icons.person),
+        title: Text(suggest[index].name),
+        onTap: () {
+          // Navigator.of(context).push(MaterialPageRoute(
+          //     builder: (_) => PersonSettings(
+          //           personDetail: suggest[index],
+          //         )));
+        },
+      ),
+      itemCount: suggest.length,
     );
   }
 }
