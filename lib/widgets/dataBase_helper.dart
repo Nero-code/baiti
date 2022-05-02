@@ -156,6 +156,15 @@ class StudentsDB {
     );
   }
 
+  Future<void> updatePayment(Payments p) async {
+    await db?.update(
+      'Payment',
+      p.toMap(),
+      where: 'date = ?',
+      whereArgs: [p.date],
+    );
+  }
+
   Future<void> deletePayment(Payments p) async {
     await db?.delete(
       'Payment',

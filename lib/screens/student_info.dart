@@ -29,11 +29,15 @@ class _StudentInfoState extends State<StudentInfo> {
   List<Payments> pList, changesList = [];
   bool rtl;
   StudentsDB db;
+  late AlertDialog updateAlert;
 
   bool expandPayAdd = false;
 
   final valueCtrl = TextEditingController();
   final descriptionCtrl = TextEditingController();
+
+  final updateValueCtrl = TextEditingController();
+  final updateDescrCtrl = TextEditingController();
 
   _StudentInfoState({
     required this.student,
@@ -41,6 +45,53 @@ class _StudentInfoState extends State<StudentInfo> {
     required this.rtl,
     required this.db,
   });
+  Widget updateDialog(int index) {
+    return updateAlert = AlertDialog(
+      title: Text('هل تريد اضافة تعديل؟'),
+      actions: [
+        TextField(
+          decoration: InputDecoration(
+            hintText: 'القيمة الجديدة',
+            isCollapsed: true,
+          ),
+          controller: updateValueCtrl,
+        ),
+        SizedBox(height: 15),
+        TextField(
+          decoration: InputDecoration(
+            hintText: 'الوصف',
+            isCollapsed: true,
+          ),
+          controller: updateDescrCtrl,
+        ),
+        SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                "موافق",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+            SizedBox(width: 5),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                "الغاء",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
 
   Future<void> savePayment() async {
     if (valueCtrl.text.isEmpty) {
@@ -67,16 +118,20 @@ class _StudentInfoState extends State<StudentInfo> {
     descriptionCtrl.clear();
   }
 
-  void func(int i) {
-    setState(
-      () {
-        db.deletePayment(pList[i]);
-        pList.remove(pList[i]);
-        print("object $i");
-        print("payments: $pList");
-      },
-    );
+  void updatePayment(Payments p) async {
+    await db.updatePayment(p);
   }
+
+  // void func(int i) {
+  //   setState(
+  //     () {
+  //       db.deletePayment(pList[i]);
+  //       pList.remove(pList[i]);
+  //       print("object $i");
+  //       print("payments: $pList");
+  //     },
+  //   );
+  // }
 
   @override
   void dispose() {
@@ -189,8 +244,10 @@ class _StudentInfoState extends State<StudentInfo> {
             ),
             if (pList.isNotEmpty)
               for (int i = 0; i < pList.length; i++)
-                InkWell(
-                  child: PaymentCard(payment: pList[i]),
+                PaymentCard(
+                  payment: pList[i],
+                  onPressed: () => showDialog(
+                      context: context, builder: (_) => updateDialog(i)),
                 ),
           ],
         ),
