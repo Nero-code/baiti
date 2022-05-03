@@ -1,33 +1,30 @@
+import 'dart:ffi';
+
 import 'package:baiti/widgets/paymentCard.dart';
 import 'package:flutter/material.dart';
 import '../widgets/dataBase_helper.dart';
 
 class StudentInfo extends StatefulWidget {
-  const StudentInfo({
+  StudentInfo({
     Key? key,
     required this.student,
-    required this.pList,
     required this.db,
     this.rtl = true,
   }) : super(key: key);
   final Student student;
   final bool rtl;
-  final List<Payments> pList;
   final StudentsDB db;
 
   @override
   State<StudentInfo> createState() => _StudentInfoState(
         student: student,
-        rtl: rtl,
-        pList: pList,
         db: db,
       );
 }
 
 class _StudentInfoState extends State<StudentInfo> {
   Student student;
-  List<Payments> pList, changesList = [];
-  bool rtl;
+  List<Payments> pList = [];
   StudentsDB db;
   late AlertDialog updateAlert;
 
@@ -36,16 +33,23 @@ class _StudentInfoState extends State<StudentInfo> {
   final valueCtrl = TextEditingController();
   final descriptionCtrl = TextEditingController();
 
-  final updateValueCtrl = TextEditingController();
-  final updateDescrCtrl = TextEditingController();
+  
+  Future<void> fetch() async {
+    List<Payments> plist = await db.getPaymentsById(student.id);
+    setState(() {
+      pList = plist;
+    });
+  }
 
   _StudentInfoState({
     required this.student,
-    required this.pList,
-    required this.rtl,
     required this.db,
-  });
-  Widget updateDialog(int index) {
+  }) {
+    fetch();
+  }
+  Widget updateDialog(Payments index, int ind) {
+   final updateValueCtrl = TextEditingController();
+  final updateDescrCtrl = TextEditingController();
     return updateAlert = AlertDialog(
       title: Text('هل تريد اضافة تعديل؟'),
       actions: [
@@ -70,6 +74,13 @@ class _StudentInfoState extends State<StudentInfo> {
           children: [
             ElevatedButton(
               onPressed: () {
+                index.payment = double.parse(updateValueCtrl.text);
+                index.description = updateDescrCtrl.text;
+                updatePayment(index);
+                setState(() {
+                  pList[ind] = index;
+                });
+                
                 Navigator.of(context).pop();
               },
               child: Text(
@@ -103,15 +114,15 @@ class _StudentInfoState extends State<StudentInfo> {
       payment: double.parse(valueCtrl.text),
       description: descriptionCtrl.text,
     );
-    await db.insertPayment(
+    temp.pid = await db.insertPayment(
       userId: temp.id,
       payment: temp.payment,
       description: temp.description,
       dateTime: temp.date,
     );
     setState(() {
-      pList.add(temp);
-      changesList.add(temp);
+      // pList.add(temp);
+      pList.insert(0, temp);
       expandPayAdd = false;
     });
     valueCtrl.clear();
@@ -144,7 +155,7 @@ class _StudentInfoState extends State<StudentInfo> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        Navigator.of(context).pop(changesList);
+        Navigator.of(context).pop();
         return true;
       },
       child: Scaffold(
@@ -178,7 +189,7 @@ class _StudentInfoState extends State<StudentInfo> {
           padding: EdgeInsets.all(10),
           children: [
             Column(
-              textDirection: rtl ? TextDirection.rtl : TextDirection.ltr,
+              textDirection: TextDirection.rtl,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
@@ -247,8 +258,10 @@ class _StudentInfoState extends State<StudentInfo> {
                 PaymentCard(
                   payment: pList[i],
                   onPressed: () => showDialog(
-                      context: context, builder: (_) => updateDialog(i)),
+                      context: context,
+                      builder: (_) => updateDialog(pList[i], i)),
                 ),
+
           ],
         ),
       ),

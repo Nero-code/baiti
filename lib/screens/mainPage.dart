@@ -90,11 +90,7 @@ class _MainPageState extends State<MainPage>
       MaterialPageRoute(
         builder: (_) => StudentInfo(
           student: people[i],
-          pList: getStudentPayments(
-            people[i].id,
-          ),
           db: db,
-          rtl: rtl,
         ),
       ),
     );

@@ -71,7 +71,7 @@ class StudentsDB {
           'CREATE TABLE IF NOT EXISTS Student(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, year TEXT, motherName TEXT, university TEXT, nationalid TEXT)',
         );
         dbPath.execute(
-            'CREATE TABLE IF NOT EXISTS Payment(userId INTEGER, payment FLOAT, description TEXT, date TEXT)');
+            'CREATE TABLE IF NOT EXISTS Payment(userId INTEGER,id INTEGER PRIMARY KEY AUTOINCREMENT, payment FLOAT, description TEXT, date TEXT)');
       },
     );
     print("init finished!");
@@ -130,22 +130,36 @@ class StudentsDB {
     return payments;
   }
 
+  Future<List<Payments>> getPaymentsById(int id) async {
+    final List<Map<String, dynamic>>? maps = await db?.query('Payment',
+        where: "userId = ?", whereArgs: [id], orderBy: "date desc");
+    final List<Payments> payments = [];
+    if (maps != null) {
+      maps.forEach((element) {
+        payments.add(paymentFromMap(element));
+      });
+    }
+    print("Payment in dataBase: $payments");
+    return payments;
+  }
+
   Payments paymentFromMap(Map<String, dynamic> p) {
     return Payments(
       date: p['date'],
       description: p['description'],
       id: p['userId'],
       payment: p['payment'],
+      pid: p['id'],
     );
   }
 
-  Future<void> insertPayment({
+  Future<int?> insertPayment({
     required int userId,
     required double payment,
     String description = '',
     required String dateTime,
   }) async {
-    await db?.insert(
+    var res = await db?.insert(
       'Payment',
       {
         'userId': userId,
@@ -154,14 +168,16 @@ class StudentsDB {
         'date': dateTime,
       },
     );
+    print(res);
+    return res;
   }
 
   Future<void> updatePayment(Payments p) async {
     await db?.update(
       'Payment',
       p.toMap(),
-      where: 'date = ?',
-      whereArgs: [p.date],
+      where: 'id = ?',
+      whereArgs: [p.pid],
     );
   }
 
@@ -175,16 +191,38 @@ class StudentsDB {
 }
 
 class Payments {
-  final String description, date;
-  final double payment;
-  final int id;
+  String description, date;
+  double payment;
+  int id;
+  int? pid;
 
-  const Payments({
+  Payments({
     required this.date,
     this.description = '',
+    this.pid,
     required this.id,
     required this.payment,
   });
+
+  int get userId => id;
+  double get pay => payment;
+  String get Reason => description;
+  String get pdate => date;
+  set userId(int value) {
+    id = value;
+  }
+
+  set pay(double value) {
+    payment = value;
+  }
+
+  set Reason(String value) {
+    if (value.length <= 255) description = value;
+  }
+
+  set pdate(String value) {
+    date = value;
+  }
 
   Map<String, dynamic> toMap() {
     return {
