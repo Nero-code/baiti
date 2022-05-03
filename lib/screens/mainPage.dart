@@ -47,7 +47,7 @@ class _MainPageState extends State<MainPage>
         ),
       ],
     );
-    fetchData();
+    fetchData(0);
   }
 
   List<Student> people = [];
@@ -56,9 +56,9 @@ class _MainPageState extends State<MainPage>
   bool multiCheckEnabled = false;
   bool isSearchEnabled = false;
   bool rtl = true;
-  //
-  Future<void> fetchData() async {
-    List<Student> pe = await db.getAllStudents();
+  bool deletedStd = false;
+  Future<void> fetchData(deleted) async {
+    List<Student> pe = await db.getAllStudents(deleted);
     print("people: $pe");
 
     setState(() {
@@ -122,6 +122,22 @@ class _MainPageState extends State<MainPage>
               icon: Icon(
                 Icons.search,
               ),
+            ),
+            IconButton(
+              splashRadius: 25,
+              onPressed: () {
+                  setState(() {
+                     deletedStd = !deletedStd;
+                  });
+                if (deletedStd) {
+                  fetchData(1);
+                } else {
+                  fetchData(0);
+                }
+              },
+              icon: deletedStd
+                  ? Icon(Icons.view_headline)
+                  :Icon(Icons.delete_sweep) ,
             ),
             AnimatedOpacity(
               opacity: isSearchEnabled ? 0.0 : 1.0,

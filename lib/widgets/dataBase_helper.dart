@@ -143,8 +143,8 @@ class StudentsDB {
     );
   }
 
-  Future<List<Student>> getAllStudents() async {
-    final List<Map<String, dynamic>>? maps = await db?.query('Student', where: "deleted = ?", whereArgs: [1]);
+  Future<List<Student>> getAllStudents(deleted) async {
+    final List<Map<String, dynamic>>? maps = await db?.query('Student', where: "deleted = ?", whereArgs: [deleted]);
     final List<Student> student = [];
     if (maps != null) {
       maps.forEach((element) {
