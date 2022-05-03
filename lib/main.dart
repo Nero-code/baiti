@@ -1,3 +1,4 @@
+import 'package:baiti/screens/loginScreen.dart';
 import 'package:baiti/screens/mainPage.dart';
 import 'package:baiti/widgets/dataBase_helper.dart';
 import 'package:flutter/material.dart';
@@ -55,112 +56,7 @@ class _LoginState extends State<Login> {
     }
 
     return Scaffold(
-        body: Container(
-      width: MediaQuery.of(context).size.width,
-      decoration: BoxDecoration(
-        color: Colors.purple.shade800,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.podcasts,
-            color: Colors.amber,
-            size: 40,
-          ),
-          SizedBox(
-            height: 30,
-          ),
-          // Card Widget Start Point
-          !isLoggedIn
-              ? Container(
-                  width: MediaQuery.of(context).size.width / 1.5,
-                  padding: EdgeInsets.only(bottom: 10, left: 10, right: 10),
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                          color: Color(0x33ffffff),
-                          offset: Offset(-5, -5),
-                          blurRadius: 7),
-                      BoxShadow(
-                          color: Colors.purple.shade900,
-                          offset: Offset(5, 5),
-                          blurRadius: 10),
-                    ],
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(15),
-                    ),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        height: 40,
-                        width: double.infinity,
-                        alignment: Alignment(-0.9, 0.0),
-                        child: Text(
-                          "New Account:",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black45,
-                          ),
-                        ),
-                      ),
-                      Theme(
-                        data: ThemeData(primarySwatch: Colors.amber),
-                        child: TextField(
-                          controller: textController,
-                          decoration: InputDecoration(
-                            isDense: true,
-                            labelText: "username",
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(15),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Theme(
-                        data: ThemeData(primarySwatch: Colors.amber),
-                        child: TextField(
-                          decoration: InputDecoration(
-                            labelText: "password",
-                            isDense: true,
-                            border: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(15))),
-                          ),
-                        ),
-                      ),
-                      ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(
-                            Color(Colors.amber.value),
-                          ),
-                        ),
-                        onPressed: () => Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                                builder: (_) => MainPage(db: db))),
-                        child: Text(
-                          "Sign in",
-                          style: TextStyle(color: Colors.grey.shade800),
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              // Card widget end point
-              : CircularProgressIndicator(
-                  color: Colors.amber,
-                ),
-        ],
-      ),
-    ));
+      body: LoginScreen(),
+    );
   }
 }

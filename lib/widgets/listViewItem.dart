@@ -43,7 +43,7 @@ class SimpleListItem extends StatelessWidget {
                   width: 15,
                 ),
               Container(
-                width: MediaQuery.of(context).size.width / 1.55,
+                width: MediaQuery.of(context).size.width / 1.4,
                 child: Column(
                   textDirection: rtl ? TextDirection.rtl : TextDirection.ltr,
                   crossAxisAlignment: CrossAxisAlignment.start,
