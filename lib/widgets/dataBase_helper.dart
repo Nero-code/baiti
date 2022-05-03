@@ -8,17 +8,53 @@ import 'package:path/path.dart' as path;
 //  this file includes {}  dataBase
 
 class Student {
-  final int id;
-  final String name, motherName, university, year, nationalId;
+  int id;
+  int deleted;
+  String name, motherName, university, year, nationalId;
 
-  const Student({
+  Student({
     required this.id,
     required this.name,
     required this.year,
     required this.university,
     required this.motherName,
     required this.nationalId,
+    this.deleted = 0,
   });
+  int get uid => id;
+  int get udeleted => deleted;
+  String get PersonName => name;
+  String get uyear => year;
+  String get uUniversity => university;
+  String get uMotherName => motherName;
+  String get uNationalId => nationalId;
+  set uid(int value) {
+    id = value;
+  }
+
+  set udeleted(int value) {
+    deleted = value;
+  }
+
+  set PersonName(String value) {
+    if (value.length <= 255) name = value;
+  }
+
+  set uyear(String value) {
+    if (value.length <= 255) year = value;
+  }
+
+  set uUniversity(String value) {
+    if (value.length <= 255) university = value;
+  }
+
+  set uMotherName(String value) {
+    if (value.length <= 255) motherName = value;
+  }
+
+  set uNationalId(String value) {
+    if (value.length <= 255) nationalId = value;
+  }
 
   @override
   String toString() {
@@ -33,6 +69,7 @@ class Student {
       'university': university,
       'motherName': motherName,
       'nationalid': nationalId,
+      'deleted' : deleted
     };
   }
 }
@@ -68,7 +105,7 @@ class StudentsDB {
       onCreate: (dbPath, version) {
         print("DataBase Created: ${dbPath.path}");
         dbPath.execute(
-          'CREATE TABLE IF NOT EXISTS Student(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, year TEXT, motherName TEXT, university TEXT, nationalid TEXT)',
+          'CREATE TABLE IF NOT EXISTS Student(id INTEGER PRIMARY KEY AUTOINCREMENT,deleted INTEGER, name TEXT, year TEXT, motherName TEXT, university TEXT, nationalid TEXT)',
         );
         dbPath.execute(
             'CREATE TABLE IF NOT EXISTS Payment(userId INTEGER,id INTEGER PRIMARY KEY AUTOINCREMENT, payment FLOAT, description TEXT, date TEXT)');
@@ -98,15 +135,16 @@ class StudentsDB {
   }
 
   Future<void> deleteStudent(Student p) async {
-    await db?.delete(
+    await db?.update(
       'Student',
+      p.toMap(),
       where: 'id = ?',
       whereArgs: [p.id],
     );
   }
 
   Future<List<Student>> getAllStudents() async {
-    final List<Map<String, dynamic>>? maps = await db?.query('Student');
+    final List<Map<String, dynamic>>? maps = await db?.query('Student', where: "deleted = ?", whereArgs: [1]);
     final List<Student> student = [];
     if (maps != null) {
       maps.forEach((element) {

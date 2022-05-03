@@ -51,7 +51,6 @@ class _MainPageState extends State<MainPage>
   }
 
   List<Student> people = [];
-  List<Payments> payments = [];
   List<int> isChecked = [];
 
   bool multiCheckEnabled = false;
@@ -60,13 +59,10 @@ class _MainPageState extends State<MainPage>
   //
   Future<void> fetchData() async {
     List<Student> pe = await db.getAllStudents();
-    List<Payments> py = await db.getAllPayment();
     print("people: $pe");
-    print("payments: $py");
 
     setState(() {
       people = pe;
-      payments = py;
     });
   }
 
@@ -94,36 +90,12 @@ class _MainPageState extends State<MainPage>
         ),
       ),
     );
-    print(res);
-    if (res == null) return;
-    setState(() {
-      for (Payments i in res) payments.add(i);
-    });
   }
 
   void deleteStudent(Student s) async {
-    print("deleting student's payments...");
-    for (var i in payments) {
-      if (i.id == s.id) {
-        await db.deletePayment(i);
-      }
-    }
-    payments = await db.getAllPayment();
-    print("finished! deleting student...");
+    s.deleted = 1;
+    print(s.toMap());
     await db.deleteStudent(s);
-    print("DONE!");
-  }
-
-  List<Payments> getStudentPayments(int studentId) {
-    List<Payments> temp = [];
-
-    print("payments: $payments");
-    for (var i in payments) {
-      if (i.id == studentId) {
-        temp.add(i);
-      }
-    }
-    return temp;
   }
 
   @override
@@ -263,8 +235,14 @@ class SearchData extends SearchDelegate<Student> {
   Widget buildLeading(BuildContext context) {
     return IconButton(
         onPressed: () {
-            Student std =Student(id: 0, name: "nodata", year: "0", university: "0", motherName: "motherName", nationalId: "nationalId");
-            close(context, std);
+          Student std = Student(
+              id: 0,
+              name: "nodata",
+              year: "0",
+              university: "0",
+              motherName: "motherName",
+              nationalId: "nationalId");
+          close(context, std);
         },
         icon: AnimatedIcon(
           icon: AnimatedIcons.menu_arrow,

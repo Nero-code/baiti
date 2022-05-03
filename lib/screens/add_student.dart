@@ -37,6 +37,7 @@ class _AddStudentPageState extends State<AddStudentPage> {
       'university': universityCtrl.text,
       'motherName': motherNameCtrl.text,
       'nationalid': nationalidCtrl.text,
+      'deleted':0
     });
     var temp = Student(
         id: id as int,
