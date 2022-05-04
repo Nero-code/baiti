@@ -1,3 +1,4 @@
+import 'package:baiti/screens/mainPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -162,11 +163,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         ElevatedButton(
                             onPressed: () {
-                              setState(() {
-                                isVisible = !isVisible;
-                              });
-                              print(
-                                  "Debug: " + code1Ctrl.text + code2Ctrl.text);
+                              // setState(() {
+                              //   isVisible = !isVisible;
+                              // });
+                              // print(
+                              //     "Debug: " + code1Ctrl.text + code2Ctrl.text);
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (_) => MainPage()));
                             },
                             child: Text("تسجيل الدخول"))
                       ],
