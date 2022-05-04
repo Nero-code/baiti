@@ -57,7 +57,7 @@ class _LoginState extends State<Login> {
     }
 
     return Scaffold(
-      body: LoginScreen(),
+      body: LoginScreen(db:db),
     );
   }
 }

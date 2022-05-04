@@ -49,11 +49,10 @@ class SimpleListItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      title,
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      title,style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold)
                     ),
                     SizedBox(height: 5),
-                    if (subTitle != null) Text(subTitle.toString()),
+                    if (subTitle != null) Text(subTitle.toString(),style: TextStyle(fontSize: 16)),
                   ],
                 ),
               ),
@@ -67,7 +66,7 @@ class SimpleListItem extends StatelessWidget {
             ],
           ),
           Container(
-            height: 1,
+            height: 2,
             width: MediaQuery.of(context).size.width - 20,
             color: Colors.black12,
           ),

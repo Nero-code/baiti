@@ -117,8 +117,9 @@ class _MainPageState extends State<MainPage>
           actions: [
             IconButton(
               splashRadius: 25,
-              onPressed: () =>
-                  {showSearch(context: context, delegate: SearchData(people))},
+              onPressed: () => {
+                showSearch(context: context, delegate: SearchData(people, db))
+              },
               icon: Icon(
                 Icons.search,
               ),
@@ -126,9 +127,9 @@ class _MainPageState extends State<MainPage>
             IconButton(
               splashRadius: 25,
               onPressed: () {
-                  setState(() {
-                     deletedStd = !deletedStd;
-                  });
+                setState(() {
+                  deletedStd = !deletedStd;
+                });
                 if (deletedStd) {
                   fetchData(1);
                 } else {
@@ -137,7 +138,7 @@ class _MainPageState extends State<MainPage>
               },
               icon: deletedStd
                   ? Icon(Icons.view_headline)
-                  :Icon(Icons.delete_sweep) ,
+                  : Icon(Icons.delete_sweep),
             ),
             AnimatedOpacity(
               opacity: isSearchEnabled ? 0.0 : 1.0,
@@ -234,7 +235,8 @@ class _MainPageState extends State<MainPage>
 
 class SearchData extends SearchDelegate<Student> {
   final List<Student> persons;
-  SearchData(this.persons);
+  final db;
+  SearchData(this.persons, this.db);
   final List<Student> fList = [];
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -243,7 +245,7 @@ class SearchData extends SearchDelegate<Student> {
           onPressed: () {
             query = "";
           },
-          icon: Icon(Icons.clear)),
+          icon: Icon(Icons.clear),color: Colors.purple,),
     ];
   }
 
@@ -260,17 +262,19 @@ class SearchData extends SearchDelegate<Student> {
               nationalId: "nationalId");
           close(context, std);
         },
+        color: Colors.purple,
         icon: AnimatedIcon(
           icon: AnimatedIcons.menu_arrow,
           progress: transitionAnimation,
+          
         ));
   }
 
   @override
   Widget buildResults(BuildContext context) {
     return Container(
-      color: Color(0xff262938),
-      padding: EdgeInsets.symmetric(horizontal: 22, vertical: 25),
+      color: Colors.white,
+      
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -278,10 +282,21 @@ class SearchData extends SearchDelegate<Student> {
             child: ListView(
               children: fList.map((e) {
                 return SimpleListItem(
-                  title: e.name,
                   id: e.id,
+                  subTitle: e.year,
+                  leading: Icon(
+                    Icons.rounded_corner,
+                    size: 30,
+                  ),
+                  rtl: true,
+                  title: e.name,
+                  onLongPressed: () {},
                   onPressed: () {
-                    //  Navigator.of(context).push(MaterialPageRoute(builder:(_)=>StudentInfo(student: e)));
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => StudentInfo(
+                              student: e,
+                              db: db,
+                            )));
                   },
                 );
               }).toList(),
@@ -302,13 +317,14 @@ class SearchData extends SearchDelegate<Student> {
     }
     return ListView.builder(
       itemBuilder: (context, index) => ListTile(
-        leading: Icon(Icons.person),
-        title: Text(suggest[index].name),
+        leading: Icon(Icons.person,color: Colors.purple,),
+        title: Text(suggest[index].name,style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
         onTap: () {
-          // Navigator.of(context).push(MaterialPageRoute(
-          //     builder: (_) => PersonSettings(
-          //           personDetail: suggest[index],
-          //         )));
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (_) => StudentInfo(
+                    student: suggest[index],
+                    db: db,
+                  )));
         },
       ),
       itemCount: suggest.length,

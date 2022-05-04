@@ -3,19 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class LoginScreen extends StatefulWidget {
-  LoginScreen({Key? key}) : super(key: key);
-
+  LoginScreen({Key? key, this.db}) : super(key: key);
+  final db;
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _LoginScreenState createState() => _LoginScreenState(db);
 }
 
 class _LoginScreenState extends State<LoginScreen> {
   final code1Ctrl = TextEditingController();
   final code2Ctrl = TextEditingController();
-
+  final db;
   final _node = FocusScopeNode();
-
-  bool isVisible = true;
+  _LoginScreenState(this.db);
+  bool isVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -163,13 +163,17 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         ElevatedButton(
                             onPressed: () {
-                              // setState(() {
-                              //   isVisible = !isVisible;
-                              // });
+                              if (!isVisible)
+                                setState(() {
+                                  isVisible = !isVisible;
+                                });
                               // print(
                               //     "Debug: " + code1Ctrl.text + code2Ctrl.text);
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (_) => MainPage()));
+                              else
+                                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                    builder: (_) => MainPage(
+                                          db: db,
+                                        )));
                             },
                             child: Text("تسجيل الدخول"))
                       ],
